@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Scorecard</title>
+    <link rel="icon" type="image/x-icon" href="https://favicon.show/thesweatervest.com">
+    <link rel="shortcut icon" href="https://favicon.show/thesweatervest.com">
+    <link rel="apple-touch-icon" href="https://favicon.show/thesweatervest.com">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+            line-height: 1.6;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+        
+        .names-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .goal-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background-color: #ffffff;
+        }
+        
+        .goal-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+        
+        .goal-target {
+            color: #6c757d;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+        
+        .scoring-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .score-option {
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #fff;
+        }
+        
+        .score-option:hover {
+            border-color: #007bff;
+            background-color: #f8f9fa;
+        }
+        
+        .score-option.selected {
+            border-color: #007bff;
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .score-value {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .score-description {
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .current-score {
+            text-align: center;
+            font-weight: bold;
+            color: #007bff;
+            margin-top: 10px;
+            font-size: 1.1em;
+        }
+        
+        .total-section {
+            background-color: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .total-score {
+            font-size: 2em;
+            font-weight: bold;
+            color: #28a745;
+        }
+        
+        .notes-section {
+            margin: 30px 0;
+        }
+        
+        .notes-section h3 {
+            color: #495057;
+            margin-bottom: 20px;
+        }
+        
+        .checkin-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .checkin-item label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #495057;
+            font-size: 16px;
+        }
+        
+        .checkin-item input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        .checkin-item textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .copy-btn:hover {
+            background-color: #0056b3;
+        }
+        
+        .reset-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background-color: #545b62;
+        }
+        
+        .copy-feedback {
+            text-align: center;
+            margin-top: 10px;
+            color: #28a745;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .copy-feedback.show {
+            opacity: 1;
+        }
+        
+        .results-display {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .results-display h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            margin-top: 0;
+            font-size: 1.2em;
+        }
+        
+        .results-text {
+            width: 100%;
+            min-height: 250px;
+            padding: 15px;
+            border: 2px solid #007bff;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            background-color: #ffffff;
+            resize: vertical;
+            box-sizing: border-box;
+            line-height: 1.5;
+            color: #333;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Weekly Health Goals Grading Rubric</h1>
+        
+        <div class="names-section">
+            <div>
+                <label for="evaluator-name">Evaluator Name (Optional):</label>
+                <input type="text" id="evaluator-name" placeholder="Your name">
+            </div>
+            <div>
+                <label for="patient-name">Patient Name (Optional):</label>
+                <input type="text" id="patient-name" placeholder="Patient name">
+            </div>
+        </div>
+        
+        <!-- Goal 1: Solid Breakfast -->
+        <div class="goal-section">
+            <div class="goal-title">Solid Breakfast</div>
+            <div class="goal-target">(5x weekly breakfasts with Protein & Fiber before 10am)</div>
+            <div class="scoring-grid" data-goal="breakfast">
+                <div class="score-option" data-score="2">
+                    <div class="score-value">SCORE 2</div>
+                    <div class="score-description">5 days</div>
+                </div>
+                <div class="score-option" data-score="1">
+                    <div class="score-value">SCORE 1</div>
+                    <div class="score-description">3-4 days</div>
+                </div>
+                <div class="score-option" data-score="0">
+                    <div class="score-value">SCORE 0</div>
+                    <div class="score-description">Less than 3 days</div>
+                </div>
+            </div>
+            <div class="current-score" id="breakfast-score">This Week: ___/2</div>
+        </div>
+        
+        <!-- Goal 2: Strength Training -->
+        <div class="goal-section">
+            <div class="goal-title">Strength Training</div>
+            <div class="goal-target">(3 workouts per week)</div>
+            <div class="scoring-grid" data-goal="strength">
+                <div class="score-option" data-score="2">
+                    <div class="score-value">SCORE 2</div>
+                    <div class="score-description">3+ workouts completed</div>
+                </div>
+                <div class="score-option" data-score="1">
+                    <div class="score-value">SCORE 1</div>
+                    <div class="score-description">1-2 workouts completed</div>
+                </div>
+                <div class="score-option" data-score="0">
+                    <div class="score-value">SCORE 0</div>
+                    <div class="score-description">0 workouts completed</div>
+                </div>
+            </div>
+            <div class="current-score" id="strength-score">This Week: ___/2</div>
+        </div>
+        
+        <!-- Goal 3: Cardio Goals -->
+        <div class="goal-section">
+            <div class="goal-title">Cardio Goals</div>
+            <div class="goal-target">(2x weekly)</div>
+            <div class="scoring-grid" data-goal="cardio">
+                <div class="score-option" data-score="2">
+                    <div class="score-value">SCORE 2</div>
+                    <div class="score-description">2+ sessions completed</div>
+                </div>
+                <div class="score-option" data-score="1">
+                    <div class="score-value">SCORE 1</div>
+                    <div class="score-description">1 session completed</div>
+                </div>
+                <div class="score-option" data-score="0">
+                    <div class="score-value">SCORE 0</div>
+                    <div class="score-description">0 sessions completed</div>
+                </div>
+            </div>
+            <div class="current-score" id="cardio-score">This Week: ___/2</div>
+        </div>
+        
+        <!-- Goal 4: Meal Logging -->
+        <div class="goal-section">
+            <div class="goal-title">Meal Logging</div>
+            <div class="goal-target">(all meals have photos and correct descriptions in app)</div>
+            <div class="scoring-grid" data-goal="logging">
+                <div class="score-option" data-score="2">
+                    <div class="score-value">SCORE 2</div>
+                    <div class="score-description">7 days complete</div>
+                </div>
+                <div class="score-option" data-score="1">
+                    <div class="score-value">SCORE 1</div>
+                    <div class="score-description">4-6 days complete</div>
+                </div>
+                <div class="score-option" data-score="0">
+                    <div class="score-value">SCORE 0</div>
+                    <div class="score-description">Less than 4 days</div>
+                </div>
+            </div>
+            <div class="current-score" id="logging-score">This Week: ___/2</div>
+        </div>
+        
+        <!-- Goal 5: Quality Healthy Choices -->
+        <div class="goal-section">
+            <div class="goal-title">Quality Healthy Choices</div>
+            <div class="goal-target">(consistently good choices)</div>
+            <div class="scoring-grid" data-goal="choices">
+                <div class="score-option" data-score="2">
+                    <div class="score-value">SCORE 2</div>
+                    <div class="score-description">Consistently good choices</div>
+                </div>
+                <div class="score-option" data-score="1">
+                    <div class="score-value">SCORE 1</div>
+                    <div class="score-description">Some good choices, room for improvement</div>
+                </div>
+                <div class="score-option" data-score="0">
+                    <div class="score-value">SCORE 0</div>
+                    <div class="score-description">Poor choices most days</div>
+                </div>
+            </div>
+            <div class="current-score" id="choices-score">This Week: ___/2</div>
+        </div>
+        
+        <div class="total-section">
+            <div class="total-score" id="total-score">Total Score: ___/10</div>
+        </div>
+        
+        <div class="notes-section">
+            <h3>Quick Weekly Check-In</h3>
+            
+            <div class="checkin-item">
+                <label for="biggest-win">1. Biggest win:</label>
+                <input type="text" id="biggest-win" placeholder="What went really well this week?">
+            </div>
+            
+            <div class="checkin-item">
+                <label for="main-challenge">2. Main challenge:</label>
+                <input type="text" id="main-challenge" placeholder="What was most difficult this week?">
+            </div>
+            
+            <div class="checkin-item">
+                <label for="what-helped">3. What helped:</label>
+                <input type="text" id="what-helped" placeholder="What strategies or support helped you succeed?">
+            </div>
+            
+            <div class="checkin-item">
+                <label for="next-focus">4. Next week focus:</label>
+                <input type="text" id="next-focus" placeholder="What will you focus on next week?">
+            </div>
+            
+            <div class="checkin-item">
+                <label for="dietitian-notes">Dietitian Notes:</label>
+                <textarea id="dietitian-notes" placeholder="Professional observations and recommendations..."></textarea>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button class="copy-btn" onclick="copyResults()">Copy Results</button>
+            <button class="reset-btn" onclick="resetForm()">Reset Form</button>
+        </div>
+        
+        <div class="copy-feedback" id="copy-feedback">Results copied to clipboard!</div>
+        
+        <!-- Results Display Text Box -->
+        <div class="results-display" id="results-display">
+            <h3>📋 Results Preview (Select and Copy)</h3>
+            <textarea id="results-text" class="results-text" readonly placeholder="Click 'Copy Results' above to see your formatted scorecard here..."></textarea>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>Open source project • <a href="https://github.com/BenSweaterVest/HealthyScoreCard" target="_blank">View on GitHub</a></p>
+        </div>
+    </div>
+
+    <script>
+        let scores = {
+            breakfast: 0,
+            strength: 0,
+            cardio: 0,
+            logging: 0,
+            choices: 0
+        };
+        
+        const maxScores = {
+            breakfast: 2,
+            strength: 2,
+            cardio: 2,
+            logging: 2,
+            choices: 2
+        };
+        
+        const goalNames = {
+            breakfast: 'Solid Breakfast',
+            strength: 'Strength Training',
+            cardio: 'Cardio Goals',
+            logging: 'Meal Logging',
+            choices: 'Healthy Choices'
+        };
+
+        // Add event listeners to all score options
+        document.querySelectorAll('.score-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const goal = this.closest('.scoring-grid').dataset.goal;
+                const score = parseInt(this.dataset.score);
+                
+                // Remove selected class from siblings
+                this.parentNode.querySelectorAll('.score-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Add selected class to clicked option
+                this.classList.add('selected');
+                
+                // Update score
+                scores[goal] = score;
+                updateDisplay();
+            });
+        });
+
+        function updateDisplay() {
+            // Update individual goal scores
+            Object.keys(scores).forEach(goal => {
+                const scoreElement = document.getElementById(goal + '-score');
+                scoreElement.textContent = `This Week: ${scores[goal]}/2`;
+            });
+            
+            // Update total score
+            const total = Object.values(scores).reduce((sum, score) => sum + score, 0);
+            const maxTotal = Object.values(maxScores).reduce((sum, max) => sum + max, 0);
+            document.getElementById('total-score').textContent = `Total Score: ${total}/${maxTotal}`;
+        }
+
+        function copyResults() {
+            const evaluatorName = document.getElementById('evaluator-name').value;
+            const patientName = document.getElementById('patient-name').value;
+            const biggestWin = document.getElementById('biggest-win').value;
+            const mainChallenge = document.getElementById('main-challenge').value;
+            const whatHelped = document.getElementById('what-helped').value;
+            const nextFocus = document.getElementById('next-focus').value;
+            const dietitianNotes = document.getElementById('dietitian-notes').value;
+            
+            let output = "WEEKLY GOALS\n";
+            output += "=======\n";
+            
+            if (evaluatorName) {
+                output += `Evaluator: ${evaluatorName}\n`;
+            }
+            if (patientName) {
+                output += `Patient: ${patientName}\n`;
+            }
+            if (evaluatorName || patientName) {
+                output += "\n";
+            }
+            
+            // Add individual scores in rubric format
+            Object.keys(scores).forEach(goal => {
+                output += `${goalNames[goal]}: ${scores[goal]} / ${maxScores[goal]}\n`;
+            });
+            
+            // Add total
+            const total = Object.values(scores).reduce((sum, score) => sum + score, 0);
+            const maxTotal = Object.values(maxScores).reduce((sum, max) => sum + max, 0);
+            output += `\n**Total Score: ${total} / ${maxTotal}**\n`;
+            
+            // Add check-in responses
+            if (biggestWin || mainChallenge || whatHelped || nextFocus || dietitianNotes) {
+                output += "\nQuick Weekly Check-In:\n\n";
+                if (biggestWin) output += `Biggest win: ${biggestWin}\n`;
+                if (mainChallenge) output += `Main challenge: ${mainChallenge}\n`;
+                if (whatHelped) output += `What helped: ${whatHelped}\n`;
+                if (nextFocus) output += `Next week focus: ${nextFocus}\n`;
+                if (dietitianNotes) output += `Dietitian Notes: ${dietitianNotes}\n`;
+            }
+            
+            // Show and populate the results text box
+            const resultsDisplay = document.getElementById('results-display');
+            const resultsText = document.getElementById('results-text');
+            
+            resultsText.value = output;
+            resultsDisplay.style.display = 'block';
+            
+            // Scroll to results
+            resultsDisplay.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(output).then(() => {
+                showCopyFeedback();
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                // Fallback - create a temporary textarea
+                const tempTextarea = document.createElement('textarea');
+                tempTextarea.value = output;
+                document.body.appendChild(tempTextarea);
+                tempTextarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempTextarea);
+                showCopyFeedback();
+            });
+        }
+        
+        function showCopyFeedback() {
+            const feedback = document.getElementById('copy-feedback');
+            feedback.classList.add('show');
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
+        }
+
+        function resetForm() {
+            // Reset scores
+            scores = {
+                goal1: 0,
+                goal2: 0,
+                goal3: 0,
+                goal4: 0,
+                goal5: 0
+            };
+            
+            // Clear all selections
+            document.querySelectorAll('.score-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Clear form fields
+            document.getElementById('evaluator-name').value = '';
+            document.getElementById('patient-name').value = '';
+            document.getElementById('biggest-win').value = '';
+            document.getElementById('main-challenge').value = '';
+            document.getElementById('what-helped').value = '';
+            document.getElementById('next-focus').value = '';
+            document.getElementById('dietitian-notes').value = '';
+            
+            // Hide results display
+            const resultsDisplay = document.getElementById('results-display');
+            resultsDisplay.style.display = 'none';
+            document.getElementById('results-text').value = '';
+            
+            // Update display
+            updateDisplay();
+        }
+
+        // Initialize display
+        updateDisplay();
+    </script>
+</body>
+</html>
